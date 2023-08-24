@@ -5,12 +5,18 @@
   "main": "index.js",
   "scripts": {
     "start:dev": "cross-env NODE_ENV=development nodemon index.js",
-    "start:prod": "cross-env NODE_ENV=production pm2 start index.js --name express-articles-app"
+    "start:prod": "cross-env NODE_ENV=production pm2 start index.js --name express-articles-app",
+    "migrate": "knex migrate:latest",
+    "migrate:rollback": "knex migrate:rollback",
+    "migrate:reset": "knex migrate:rollback --all",
+    "migrate:refresh": "npm run migrate:reset && npm run migrate",
+    "db:seed": "knex seed:run"
   },
   "author": "Nikolay Shamayko <nikolay.shamayko@gmail.com>",
   "license": "MIT",
   "type": "module",
   "dependencies": {
+    "@faker-js/faker": "^8.0.2",
     "await-to-js": "^3.0.0",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",

@@ -1,0 +1,15 @@
+export const up = knex => knex.schema.hasTable('users')
+  .then(exists => {
+    if (!exists) {
+      return knex.schema.createTable('users', table => {
+        table.increments('id')
+        table.string('name', 100).notNullable()
+        table.string('username', 100).notNullable().unique()
+        table.specificType('password', 'char(60)').notNullable()
+        table.string('email', 100).notNullable().unique()
+        table.timestamps()
+      })
+    }
+  })
+
+export const down = knex => knex.schema.dropTableIfExists('users')
