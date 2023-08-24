@@ -1,0 +1,56 @@
+export default {
+  development: {
+    client: 'mysql2',
+    connection: {
+      port: 3306,
+      host: 'localhost',
+      database: 'express-articles-app',
+      user: 'root',
+      password: '1234'
+    },
+    migrations: {
+      tableName: 'migrations',
+      directory: 'db/migrations'
+    },
+    seeds: {
+      directory: 'db/seeds'
+    },
+    debug: false
+  },
+  production: {
+    client: 'mysql2',
+    connection: {
+      port: 3306,
+      host: 'localhost',
+      database: 'express-articles-app',
+      user: 'root',
+      password: '1234'
+    },
+    migrations: {
+      tableName: 'migrations',
+      directory: 'db/migrations'
+    },
+    seeds: {
+      directory: 'db/seeds'
+    },
+    debug: false
+  },
+  test: {
+    client: 'mysql2',
+    connection: {
+      port: 3306,
+      host: 'localhost',
+      database: 'express-articles-app_test',
+      user: 'root',
+      password: '1234'
+    },
+    migrations: {
+      tableName: 'migrations',
+      directory: 'db/migrations'
+    },
+    seeds: {
+      directory: 'db/seeds'
+    },
+    debug: false
+  }
+}
