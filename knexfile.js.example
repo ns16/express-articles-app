@@ -13,7 +13,7 @@ export default {
       directory: 'db/migrations'
     },
     seeds: {
-      directory: 'db/seeds'
+      directory: 'db/seeds/development
     },
     debug: false
   },
@@ -31,7 +31,7 @@ export default {
       directory: 'db/migrations'
     },
     seeds: {
-      directory: 'db/seeds'
+      directory: 'db/seeds/development'
     },
     debug: false
   },
@@ -49,7 +49,7 @@ export default {
       directory: 'db/migrations'
     },
     seeds: {
-      directory: 'db/seeds'
+      directory: 'db/seeds/test'
     },
     debug: false
   }
