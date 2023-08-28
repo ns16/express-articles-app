@@ -10,7 +10,8 @@
     "migrate:rollback": "knex migrate:rollback",
     "migrate:reset": "knex migrate:rollback --all",
     "migrate:refresh": "npm run migrate:reset && npm run migrate",
-    "db:seed": "knex seed:run"
+    "db:seed": "knex seed:run",
+    "test": "cross-env NODE_ENV=test mocha ./test --file ./test/_tools/setup.js --timeout 30000"
   },
   "author": "Nikolay Shamayko <nikolay.shamayko@gmail.com>",
   "license": "MIT",
@@ -35,5 +36,12 @@
     "lodash-es": "^4.17.21",
     "morgan": "^1.10.0",
     "mysql2": "^2.3.3"
+  },
+  "devDependencies": {
+    "chai": "^4.4.1",
+    "chai-deep-match": "^1.2.1",
+    "chai-http": "^4.4.0",
+    "chai-json-schema": "^1.5.1",
+    "mocha": "^10.2.0"
   }
 }

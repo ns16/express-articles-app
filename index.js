@@ -12,10 +12,16 @@ const app = express()
 app.use(cors({ exposedHeaders: 'Token' }))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(morgan('dev'))
-
+if (process.env.NODE_ENV !== 'test') {
+  app.use(morgan('dev'))
+}
 app.use('/api/v1', router())
-
 app.use(handleErrors)
 
-app.listen(config.port, () => console.log(`Server running on port ${config.port}`)) // eslint-disable-line no-console
+app.listen(process.env.NODE_ENV !== 'test' ? config.port : 9999, () => {
+  if (process.env.NODE_ENV !== 'test') {
+    console.log(`Server running on port ${config.port}`) // eslint-disable-line no-console
+  }
+})
+
+export default app
