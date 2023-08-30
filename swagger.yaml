@@ -1,0 +1,2945 @@
+openapi: 3.0.0
+info:
+  title: Express Articles App
+  description: RESTful API with Express and Bookshelf.js
+  version: 1.0.0
+servers:
+  - url: http://localhost:3333
+    description: Dev Server
+security:
+  - JWTAuth: []
+paths:
+  /api/v1/auth/login:
+    post:
+      summary: Login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/LoginBody'
+            example:
+              username: 'ns16'
+              password: '123456'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/AdminBody'
+              example:
+                data:
+                  id: 1
+                  name: 'Nikolay Shamayko'
+                  username: 'ns16'
+                  email: 'nikolay.shamayko@gmail.com'
+                  created_at: '2023-07-01T00:00:00.000Z'
+                  updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"username" is required'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid username or password'
+      tags:
+        - Auth
+  /api/v1/auth/me:
+    get:
+      summary: Get authorized admin
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/AdminBody'
+              example:
+                data:
+                  id: 1
+                  name: 'Nikolay Shamayko'
+                  username: 'ns16'
+                  email: 'nikolay.shamayko@gmail.com'
+                  created_at: '2023-07-01T00:00:00.000Z'
+                  updated_at: '2023-07-01T00:00:00.000Z'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+      tags:
+        - Auth
+  /api/v1/users:
+    get:
+      summary: Get users paginated list
+      parameters:
+        - name: filters
+          required: false
+          in: query
+          schema:
+            type: object
+          examples:
+            Example 1:
+              value: {}
+            Example 2:
+              value:
+                filters[id__eq]: 1
+        - name: page
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            type: integer
+        - name: pageSize
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            type: integer
+        - name: sort
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: includes[]
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - articles
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/PaginatedListUsersBody'
+              example:
+                data:
+                  - id: 1
+                    name: 'Sheldon Bahringer'
+                    username: 'Sheldon52'
+                    email: 'Sheldon_Bahringer6@yahoo.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 2
+                    name: 'Harmony Sawayn'
+                    username: 'Harmony_Sawayn36'
+                    email: 'Harmony.Sawayn12@gmail.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 3
+                    name: 'Hollie Hintz'
+                    username: 'Hollie_Hintz'
+                    email: 'Hollie_Hintz49@hotmail.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 4
+                    name: 'Celestine Rolfson'
+                    username: 'Celestine_Rolfson'
+                    email: 'Celestine_Rolfson49@hotmail.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 5
+                    name: "Elmore O'Kon II"
+                    username: 'Elmore77'
+                    email: 'Elmore.OKon4@yahoo.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 6
+                    name: 'Hester Schowalter'
+                    username: 'Hester_Schowalter67'
+                    email: 'Hester1@yahoo.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 7
+                    name: 'Alysha Rath'
+                    username: 'Alysha.Rath'
+                    email: 'Alysha94@gmail.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 8
+                    name: 'Rita Cremin'
+                    username: 'Rita_Cremin64'
+                    email: 'Rita47@yahoo.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 9
+                    name: 'Albina Kuphal-Zieme'
+                    username: 'Albina_Kuphal-Zieme'
+                    email: 'Albina_Kuphal-Zieme@hotmail.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 10
+                    name: 'Kevin Keeling'
+                    username: 'Kevin12'
+                    email: 'Kevin3@hotmail.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                pagination:
+                  page: 1
+                  pageSize: 10
+                  rowCount: 10
+                  pageCount: 1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"page" must be a number'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+      tags:
+        - Users
+    post:
+      summary: Create new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/CreateUserBody'
+            example:
+              name: 'Rosalind Trantow'
+              username: 'Rosalind4'
+              password: 'Y9ECfszZ'
+              email: 'Rosalind.Trantow35@gmail.com'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/UserBody'
+              example:
+                data:
+                  id: 11
+                  name: 'Rosalind Trantow'
+                  username: 'Rosalind4'
+                  email: 'Rosalind.Trantow35@gmail.com'
+                  created_at: '2023-07-01T00:00:00.000Z'
+                  updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"name" is required'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+      tags:
+        - Users
+  /api/v1/users/all:
+    get:
+      summary: Get all users
+      parameters:
+        - name: filters
+          required: false
+          in: query
+          schema:
+            type: object
+          examples:
+            Example 1:
+              value: {}
+            Example 2:
+              value:
+                filters[id__eq]: 1
+        - name: sort
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: includes[]
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - articles
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/ListUsersBody'
+              example:
+                data:
+                  - id: 1
+                    name: 'Sheldon Bahringer'
+                    username: 'Sheldon52'
+                    email: 'Sheldon_Bahringer6@yahoo.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 2
+                    name: 'Harmony Sawayn'
+                    username: 'Harmony_Sawayn36'
+                    email: 'Harmony.Sawayn12@gmail.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 3
+                    name: 'Hollie Hintz'
+                    username: 'Hollie_Hintz'
+                    email: 'Hollie_Hintz49@hotmail.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 4
+                    name: 'Celestine Rolfson'
+                    username: 'Celestine_Rolfson'
+                    email: 'Celestine_Rolfson49@hotmail.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 5
+                    name: "Elmore O'Kon II"
+                    username: 'Elmore77'
+                    email: 'Elmore.OKon4@yahoo.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 6
+                    name: 'Hester Schowalter'
+                    username: 'Hester_Schowalter67'
+                    email: 'Hester1@yahoo.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 7
+                    name: 'Alysha Rath'
+                    username: 'Alysha.Rath'
+                    email: 'Alysha94@gmail.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 8
+                    name: 'Rita Cremin'
+                    username: 'Rita_Cremin64'
+                    email: 'Rita47@yahoo.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 9
+                    name: 'Albina Kuphal-Zieme'
+                    username: 'Albina_Kuphal-Zieme'
+                    email: 'Albina_Kuphal-Zieme@hotmail.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 10
+                    name: 'Kevin Keeling'
+                    username: 'Kevin12'
+                    email: 'Kevin3@hotmail.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"sort" must be one of [id, name, username, email, created_at, updated_at]'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+      tags:
+        - Users
+  /api/v1/users/{id}:
+    get:
+      summary: Get specific user
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/UserBody'
+              example:
+                data:
+                  id: 11
+                  name: 'Rosalind Trantow'
+                  username: 'Rosalind4'
+                  email: 'Rosalind.Trantow35@gmail.com'
+                  created_at: '2023-07-01T00:00:00.000Z'
+                  updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"id" must be a number'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Not Found'
+      tags:
+        - Users
+    put:
+      summary: Update specific user
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/UpdateUserBody'
+            example:
+              name: 'Rosalind Trantow'
+              username: 'Rosalind5'
+              email: 'Rosalind.Trantow35@gmail.com'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/UserBody'
+              example:
+                data:
+                  id: 11
+                  name: 'Rosalind Trantow'
+                  username: 'Rosalind5'
+                  email: 'Rosalind.Trantow35@gmail.com'
+                  created_at: '2023-07-01T00:00:00.000Z'
+                  updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Example 1:
+                  value:
+                    message: '"id" must be a number'
+                Example 2:
+                  value:
+                    message: '"name" is required'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Not Found'
+      tags:
+        - Users
+    delete:
+      summary: Delete specific user
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"id" must be a number'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Not Found'
+      tags:
+        - Users
+  /api/v1/articles:
+    get:
+      summary: Get articles paginated list
+      parameters:
+        - name: filters
+          required: false
+          in: query
+          examples:
+            Example 1:
+              value: {}
+            Example 2:
+              value:
+                filters[id__eq]: 1
+          schema:
+            type: object
+        - name: page
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            type: integer
+        - name: pageSize
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            type: integer
+        - name: sort
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: includes[]
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - user
+                - content
+                - tags
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/PaginatedListArticlesBody'
+              example:
+                data:
+                  - id: 1
+                    user_id: 1
+                    title: 'sint repellendus inventore'
+                    description: 'Debitis assumenda molestiae facilis odio facilis. Aliquid odit reiciendis ut rerum reiciendis. Laborum numquam explicabo non.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 2
+                    user_id: 1
+                    title: 'deserunt tempore sit'
+                    description: 'Dicta mollitia dolorem dolorum doloremque beatae. Ut eum itaque ut. Repellat magni perspiciatis suscipit ab.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 3
+                    user_id: 2
+                    title: 'et accusantium accusantium'
+                    description: 'Dolores perspiciatis dolorum. Corrupti ullam accusamus nesciunt soluta itaque consectetur corporis earum. In amet veritatis dignissimos laudantium ipsum repellat consectetur accusamus officiis.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 4
+                    user_id: 2
+                    title: 'omnis id nam'
+                    description: 'Totam pariatur qui culpa earum nam aperiam aperiam molestiae officiis. Libero culpa suscipit consectetur magnam porro. Molestiae doloremque ratione dolores rerum commodi optio non.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 5
+                    user_id: 3
+                    title: 'in fuga occaecati'
+                    description: 'Tenetur doloremque explicabo voluptatem facilis expedita recusandae. Vitae perspiciatis earum quisquam alias ad itaque tempore possimus. Perferendis mollitia nobis eos libero quos perferendis doloremque enim.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 6
+                    user_id: 3
+                    title: 'porro maiores non'
+                    description: 'Porro reiciendis quidem recusandae sint officia aut maxime accusantium. Temporibus repellat error repellat soluta. Veniam beatae minima natus aspernatur ut deleniti laudantium.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 7
+                    user_id: 4
+                    title: 'fugiat sed sequi'
+                    description: 'Error aperiam culpa quae occaecati expedita modi eum. Mollitia mollitia et quo. Autem nulla excepturi suscipit culpa odio.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 8
+                    user_id: 4
+                    title: 'nemo libero porro'
+                    description: 'Sint ab magnam eos perferendis. Quod nesciunt in voluptatum numquam quasi optio. Tempora doloremque quasi mollitia doloremque dolor officiis aliquid molestiae.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 9
+                    user_id: 5
+                    title: 'soluta placeat mollitia'
+                    description: 'Voluptate distinctio natus. Eligendi dolores quae illum deserunt nostrum eveniet dicta. Voluptates sunt nisi incidunt ducimus eligendi.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 10
+                    user_id: 5
+                    title: 'repudiandae magnam ex'
+                    description: 'Iste a laboriosam suscipit architecto corrupti placeat a. Eos voluptatem quod corporis. Corporis iste vel.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                pagination:
+                  page: 1
+                  pageSize: 10
+                  rowCount: 20
+                  pageCount: 2
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"page" must be a number'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+      tags:
+        - Articles
+    post:
+      operationId: ArticlesController_create
+      summary: Create new article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/CreateArticleBody'
+            example:
+              user_id: 1
+              title: 'illum beatae soluta'
+              description: 'Vero nihil eius quidem. Quaerat ipsum rem animi fugit pariatur deleniti. Neque unde ad quam illo facere.'
+              status: 'published'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/ArticleBody'
+              example:
+                data:
+                  id: 21
+                  user_id: 1
+                  title: 'illum beatae soluta'
+                  description: 'Vero nihil eius quidem. Quaerat ipsum rem animi fugit pariatur deleniti. Neque unde ad quam illo facere.'
+                  status: 'published'
+                  created_at: '2023-07-01T00:00:00.000Z'
+                  updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"title" is required'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+      tags:
+        - Articles
+  /api/v1/articles/all:
+    get:
+      summary: Get all articles
+      parameters:
+        - name: filters
+          required: false
+          in: query
+          schema:
+            type: object
+          examples:
+            Example 1:
+              value: {}
+            Example 2:
+              value:
+                filters[id__eq]: 1
+        - name: sort
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: includes[]
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - user
+                - content
+                - tags
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/ListArticlesBody'
+              example:
+                data:
+                  - id: 1
+                    user_id: 1
+                    title: 'sint repellendus inventore'
+                    description: 'Debitis assumenda molestiae facilis odio facilis. Aliquid odit reiciendis ut rerum reiciendis. Laborum numquam explicabo non.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 2
+                    user_id: 1
+                    title: 'deserunt tempore sit'
+                    description: 'Dicta mollitia dolorem dolorum doloremque beatae. Ut eum itaque ut. Repellat magni perspiciatis suscipit ab.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 3
+                    user_id: 2
+                    title: 'et accusantium accusantium'
+                    description: 'Dolores perspiciatis dolorum. Corrupti ullam accusamus nesciunt soluta itaque consectetur corporis earum. In amet veritatis dignissimos laudantium ipsum repellat consectetur accusamus officiis.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 4
+                    user_id: 2
+                    title: 'omnis id nam'
+                    description: 'Totam pariatur qui culpa earum nam aperiam aperiam molestiae officiis. Libero culpa suscipit consectetur magnam porro. Molestiae doloremque ratione dolores rerum commodi optio non.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 5
+                    user_id: 3
+                    title: 'in fuga occaecati'
+                    description: 'Tenetur doloremque explicabo voluptatem facilis expedita recusandae. Vitae perspiciatis earum quisquam alias ad itaque tempore possimus. Perferendis mollitia nobis eos libero quos perferendis doloremque enim.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 6
+                    user_id: 3
+                    title: 'porro maiores non'
+                    description: 'Porro reiciendis quidem recusandae sint officia aut maxime accusantium. Temporibus repellat error repellat soluta. Veniam beatae minima natus aspernatur ut deleniti laudantium.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 7
+                    user_id: 4
+                    title: 'fugiat sed sequi'
+                    description: 'Error aperiam culpa quae occaecati expedita modi eum. Mollitia mollitia et quo. Autem nulla excepturi suscipit culpa odio.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 8
+                    user_id: 4
+                    title: 'nemo libero porro'
+                    description: 'Sint ab magnam eos perferendis. Quod nesciunt in voluptatum numquam quasi optio. Tempora doloremque quasi mollitia doloremque dolor officiis aliquid molestiae.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 9
+                    user_id: 5
+                    title: 'soluta placeat mollitia'
+                    description: 'Voluptate distinctio natus. Eligendi dolores quae illum deserunt nostrum eveniet dicta. Voluptates sunt nisi incidunt ducimus eligendi.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 10
+                    user_id: 5
+                    title: 'repudiandae magnam ex'
+                    description: 'Iste a laboriosam suscipit architecto corrupti placeat a. Eos voluptatem quod corporis. Corporis iste vel.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 11
+                    user_id: 6
+                    title: 'facere ea odit'
+                    description: 'Enim modi hic labore voluptate tempore recusandae minus. Quibusdam quod quo eaque commodi beatae harum adipisci reiciendis saepe. Soluta nulla delectus impedit non beatae soluta reprehenderit eum.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 12
+                    user_id: 6
+                    title: 'commodi quod quis'
+                    description: 'Quia voluptate vero quidem esse eveniet. Sunt et quas molestias nemo minus. Assumenda doloremque neque earum vitae.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 13
+                    user_id: 7
+                    title: 'ea libero minus'
+                    description: 'Dicta facere sequi deserunt totam eum debitis ducimus ut. Hic est nihil in id quibusdam doloribus. Doloribus reiciendis unde minus ut.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 14
+                    user_id: 7
+                    title: 'asperiores numquam labore'
+                    description: 'Possimus quos explicabo nisi sit dolorem ipsa animi. Esse aut mollitia modi quidem. Nemo maxime alias quibusdam esse facere.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 15
+                    user_id: 8
+                    title: 'adipisci ducimus occaecati'
+                    description: 'Officiis sed eaque. Eius dolor incidunt. Reprehenderit optio dolores earum consectetur similique quaerat.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 16
+                    user_id: 8
+                    title: 'magnam voluptate expedita'
+                    description: 'Voluptate culpa quidem suscipit a odio eius eligendi. Asperiores ipsa magnam quos. Quidem delectus ipsa maxime modi beatae assumenda voluptatum beatae.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 17
+                    user_id: 9
+                    title: 'earum neque at'
+                    description: 'Provident cum nobis qui accusantium voluptatibus fuga porro. Architecto repellendus numquam. Error quo nostrum explicabo et consequuntur quis.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 18
+                    user_id: 9
+                    title: 'voluptatum necessitatibus totam'
+                    description: 'Fugiat distinctio incidunt illo corporis dolores. Doloremque totam id consequuntur magni non. Deserunt amet laboriosam.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 19
+                    user_id: 10
+                    title: 'fugit debitis ut'
+                    description: 'Eos accusamus repellendus est culpa iste dolor. Velit porro laborum excepturi. Officiis nisi minima.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 20
+                    user_id: 10
+                    title: 'saepe cupiditate exercitationem'
+                    description: 'Omnis dignissimos eius voluptatum tenetur alias quibusdam. Aliquid ex ea quos dolore sunt error veritatis. Vitae esse dolor modi voluptates minima laudantium nihil beatae esse.'
+                    status: 'published'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"sort" must be one of [id, user_id, title, description, status, created_at, updated_at]'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+      tags:
+        - Articles
+  /api/v1/articles/{id}:
+    get:
+      summary: Get specific article
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/ArticleBody'
+              example:
+                data:
+                  id: 21
+                  user_id: 1
+                  title: 'illum beatae soluta'
+                  description: 'Vero nihil eius quidem. Quaerat ipsum rem animi fugit pariatur deleniti. Neque unde ad quam illo facere.'
+                  status: 'published'
+                  created_at: '2023-07-01T00:00:00.000Z'
+                  updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"id" must be a number'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Not Found'
+      tags:
+        - Articles
+    put:
+      summary: Update specific article
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/UpdateArticleBody'
+            example:
+              user_id: 1
+              title: 'illum beatae cumque'
+              description: 'Vero nihil eius quidem. Quaerat ipsum rem animi fugit pariatur deleniti. Neque unde ad quam illo facere.'
+              status: 'published'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/ArticleBody'
+              example:
+                data:
+                  id: 21
+                  user_id: 1
+                  title: 'illum beatae cumque'
+                  description: 'Vero nihil eius quidem. Quaerat ipsum rem animi fugit pariatur deleniti. Neque unde ad quam illo facere.'
+                  status: 'published'
+                  created_at: '2023-07-01T00:00:00.000Z'
+                  updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Example 1:
+                  value:
+                    message: '"id" must be a number'
+                Example 2:
+                  value:
+                    message: '"title" is required'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Not Found'
+      tags:
+        - Articles
+    delete:
+      summary: Delete specific article
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"id" must be a number'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Not Found'
+      tags:
+        - Articles
+  /api/v1/contents:
+    get:
+      summary: Get contents paginated list
+      parameters:
+        - name: filters
+          required: false
+          in: query
+          schema:
+            type: object
+          examples:
+            Example 1:
+              value: {}
+            Example 2:
+              value:
+                filters[id__eq]: 1
+        - name: page
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            type: integer
+        - name: pageSize
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            type: integer
+        - name: sort
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: includes[]
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - article
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/PaginatedListContentsBody'
+              example:
+                data:
+                  - id: 1
+                    article_id: 1
+                    body: 'Quam est dicta libero non voluptatem sint. Vitae harum sed quia sequi vel voluptas inventore aut eius. Aperiam blanditiis optio ducimus delectus error repellendus asperiores molestiae. Assumenda et error et unde. Neque quas necessitatibus aliquam incidunt vel. Aliquid enim porro doloribus laudantium. Deserunt odio iusto quisquam amet ut neque aliquam quis. Architecto officia culpa. Repellat fugit molestias nostrum fugiat ut temporibus.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 2
+                    article_id: 2
+                    body: 'Quisquam praesentium fugit et ducimus quos dolorum pariatur. Doloremque vero adipisci molestiae fuga aliquid quis a quibusdam. Vero laudantium libero error incidunt repellendus. Cupiditate deleniti illum modi minima voluptatum adipisci. Tempore molestias ducimus provident culpa. Unde in delectus pariatur dolorem unde quisquam. Consequuntur quod dolores quas quaerat veniam ipsa necessitatibus quasi natus. Laborum dolore corrupti omnis vero itaque velit nobis aut. Aperiam doloribus cumque illum dolore perferendis blanditiis.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 3
+                    article_id: 3
+                    body: 'Dolore aliquid aut optio aliquid. Perferendis ullam consectetur consequuntur ipsum at nemo modi corporis. Velit fuga saepe sit aliquam quia iste repellat vero cumque. Pariatur voluptatibus officia commodi ut mollitia occaecati vel. Et incidunt enim itaque sit laborum nisi qui. Delectus placeat vero in delectus tenetur aperiam sunt repudiandae. Quae quaerat nemo minus quam fugit. Voluptatibus mollitia aspernatur. Expedita molestias asperiores perferendis ducimus illum iste.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 4
+                    article_id: 4
+                    body: 'Et a maiores ex beatae a. Possimus aspernatur repellat. Adipisci ea provident earum impedit ullam quis ullam magnam fugiat. Quas quaerat amet temporibus blanditiis quia est. Eius fuga libero cumque exercitationem fugit at. Ipsum natus ex tempora itaque nostrum labore. Ipsam cum laboriosam dolorem voluptas. Qui numquam doloribus repellat dolor provident esse corrupti. Unde ullam qui laboriosam magnam fuga.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 5
+                    article_id: 5
+                    body: 'Culpa saepe magni tenetur iusto. Officiis non esse fuga veritatis tempore. Adipisci nam harum porro laboriosam minus tenetur eaque tenetur. Quo consectetur consequatur veniam voluptates commodi. Animi modi consectetur odio magnam commodi accusantium sed. Culpa architecto eos possimus neque vero accusamus veritatis beatae quisquam. Dignissimos officiis culpa repudiandae quidem porro. Facere facilis mollitia accusamus enim eligendi nesciunt. Hic voluptate illum nemo debitis odit fuga debitis sequi.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 6
+                    article_id: 6
+                    body: 'Velit veniam laborum. Nostrum rem officia repudiandae ipsa enim est unde expedita nam. Maxime culpa corporis eius explicabo voluptas nesciunt consequuntur sed mollitia. Deleniti magnam incidunt voluptates inventore repellendus sapiente quo est in. Nostrum modi suscipit laudantium ducimus architecto sequi. Sapiente iusto minima porro delectus quia animi expedita voluptate. Minus illum laboriosam cupiditate. Ullam sit eos facere sint. Perspiciatis sit rerum doloribus inventore commodi aspernatur.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 7
+                    article_id: 7
+                    body: 'Nesciunt modi vero eligendi saepe. Recusandae non nihil excepturi dolorum vitae dolores veritatis incidunt. Earum hic error ea. Reprehenderit cumque consequatur architecto expedita pariatur eveniet. Deleniti illo sit. Error totam similique tempore enim repudiandae. Ducimus perspiciatis repellendus harum quasi dolor autem voluptas. Commodi autem ipsum saepe expedita iste cum facere ea suscipit. Id qui delectus consequatur eos quidem accusamus provident error.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 8
+                    article_id: 8
+                    body: 'Repudiandae dignissimos quod accusantium molestias ad. Unde molestiae animi cupiditate inventore saepe incidunt mollitia voluptatibus. Corporis quo repellendus molestiae quae laudantium. Aut molestiae veniam laborum temporibus similique dolorem corporis consectetur ullam. Neque distinctio provident. Pariatur distinctio repellat odit eveniet ab perferendis officiis sequi voluptas. Pariatur qui rerum. Quo veniam consequuntur deserunt fugiat illum. Pariatur illum fuga quaerat est quasi.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 9
+                    article_id: 9
+                    body: 'In accusamus ut natus molestias nulla quisquam. Maxime aspernatur quia ut neque voluptatum numquam similique unde. Laudantium architecto sed explicabo non error. Necessitatibus corporis necessitatibus recusandae eligendi provident. Dolor incidunt optio earum adipisci aperiam minima consequatur accusamus est. Officiis numquam impedit quas. Saepe maiores suscipit debitis ex ullam soluta atque ipsum. Assumenda atque quidem. Odit nobis fuga nulla ea deleniti.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 10
+                    article_id: 10
+                    body: 'Repellendus saepe autem sit. Aliquam commodi error doloribus eum voluptatum quo. Qui quidem ad reiciendis est ex quia voluptatibus voluptate. Voluptatem numquam delectus commodi eius. Aut magnam reprehenderit possimus ab neque soluta minus. Cumque quae alias accusamus eligendi veritatis. Molestias corrupti ipsum. Qui inventore iusto soluta earum sed. Deleniti maiores et quisquam dolores.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                pagination:
+                  page: 1
+                  pageSize: 10
+                  rowCount: 20
+                  pageCount: 2
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"page" must be a number'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+      tags:
+        - Contents
+    post:
+      summary: Create new content
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/CreateContentBody'
+            example:
+              article_id: 21
+              body: 'Ipsum corrupti inventore molestiae assumenda libero odio harum molestiae. Rerum repellat doloribus earum hic officiis. Odio fugit quo nemo. Optio rem commodi placeat molestias corrupti exercitationem id deserunt. Veritatis inventore dolorem corporis quo. Doloremque cupiditate necessitatibus aliquid exercitationem accusantium repudiandae accusamus itaque. Quasi tempora reprehenderit quod quam aliquid aut pariatur. Ipsum dicta nostrum reprehenderit fugiat. Soluta autem aspernatur modi id.'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/ContentBody'
+              example:
+                data:
+                  id: 21
+                  article_id: 21
+                  body: 'Ipsum corrupti inventore molestiae assumenda libero odio harum molestiae. Rerum repellat doloribus earum hic officiis. Odio fugit quo nemo. Optio rem commodi placeat molestias corrupti exercitationem id deserunt. Veritatis inventore dolorem corporis quo. Doloremque cupiditate necessitatibus aliquid exercitationem accusantium repudiandae accusamus itaque. Quasi tempora reprehenderit quod quam aliquid aut pariatur. Ipsum dicta nostrum reprehenderit fugiat. Soluta autem aspernatur modi id.'
+                  created_at: '2023-07-01T00:00:00.000Z'
+                  updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"body" is required'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+      tags:
+        - Contents
+  /api/v1/contents/all:
+    get:
+      summary: Get all contents
+      parameters:
+        - name: filters
+          required: false
+          in: query
+          examples:
+            Example 1:
+              value: {}
+            Example 2:
+              value:
+                filters[id__eq]: 1
+          schema:
+            type: object
+        - name: sort
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: includes[]
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - article
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/ListContentsBody'
+              example:
+                data:
+                  - id: 1
+                    article_id: 1
+                    body: 'Quam est dicta libero non voluptatem sint. Vitae harum sed quia sequi vel voluptas inventore aut eius. Aperiam blanditiis optio ducimus delectus error repellendus asperiores molestiae. Assumenda et error et unde. Neque quas necessitatibus aliquam incidunt vel. Aliquid enim porro doloribus laudantium. Deserunt odio iusto quisquam amet ut neque aliquam quis. Architecto officia culpa. Repellat fugit molestias nostrum fugiat ut temporibus.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 2
+                    article_id: 2
+                    body: 'Quisquam praesentium fugit et ducimus quos dolorum pariatur. Doloremque vero adipisci molestiae fuga aliquid quis a quibusdam. Vero laudantium libero error incidunt repellendus. Cupiditate deleniti illum modi minima voluptatum adipisci. Tempore molestias ducimus provident culpa. Unde in delectus pariatur dolorem unde quisquam. Consequuntur quod dolores quas quaerat veniam ipsa necessitatibus quasi natus. Laborum dolore corrupti omnis vero itaque velit nobis aut. Aperiam doloribus cumque illum dolore perferendis blanditiis.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 3
+                    article_id: 3
+                    body: 'Dolore aliquid aut optio aliquid. Perferendis ullam consectetur consequuntur ipsum at nemo modi corporis. Velit fuga saepe sit aliquam quia iste repellat vero cumque. Pariatur voluptatibus officia commodi ut mollitia occaecati vel. Et incidunt enim itaque sit laborum nisi qui. Delectus placeat vero in delectus tenetur aperiam sunt repudiandae. Quae quaerat nemo minus quam fugit. Voluptatibus mollitia aspernatur. Expedita molestias asperiores perferendis ducimus illum iste.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 4
+                    article_id: 4
+                    body: 'Et a maiores ex beatae a. Possimus aspernatur repellat. Adipisci ea provident earum impedit ullam quis ullam magnam fugiat. Quas quaerat amet temporibus blanditiis quia est. Eius fuga libero cumque exercitationem fugit at. Ipsum natus ex tempora itaque nostrum labore. Ipsam cum laboriosam dolorem voluptas. Qui numquam doloribus repellat dolor provident esse corrupti. Unde ullam qui laboriosam magnam fuga.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 5
+                    article_id: 5
+                    body: 'Culpa saepe magni tenetur iusto. Officiis non esse fuga veritatis tempore. Adipisci nam harum porro laboriosam minus tenetur eaque tenetur. Quo consectetur consequatur veniam voluptates commodi. Animi modi consectetur odio magnam commodi accusantium sed. Culpa architecto eos possimus neque vero accusamus veritatis beatae quisquam. Dignissimos officiis culpa repudiandae quidem porro. Facere facilis mollitia accusamus enim eligendi nesciunt. Hic voluptate illum nemo debitis odit fuga debitis sequi.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 6
+                    article_id: 6
+                    body: 'Velit veniam laborum. Nostrum rem officia repudiandae ipsa enim est unde expedita nam. Maxime culpa corporis eius explicabo voluptas nesciunt consequuntur sed mollitia. Deleniti magnam incidunt voluptates inventore repellendus sapiente quo est in. Nostrum modi suscipit laudantium ducimus architecto sequi. Sapiente iusto minima porro delectus quia animi expedita voluptate. Minus illum laboriosam cupiditate. Ullam sit eos facere sint. Perspiciatis sit rerum doloribus inventore commodi aspernatur.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 7
+                    article_id: 7
+                    body: 'Nesciunt modi vero eligendi saepe. Recusandae non nihil excepturi dolorum vitae dolores veritatis incidunt. Earum hic error ea. Reprehenderit cumque consequatur architecto expedita pariatur eveniet. Deleniti illo sit. Error totam similique tempore enim repudiandae. Ducimus perspiciatis repellendus harum quasi dolor autem voluptas. Commodi autem ipsum saepe expedita iste cum facere ea suscipit. Id qui delectus consequatur eos quidem accusamus provident error.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 8
+                    article_id: 8
+                    body: 'Repudiandae dignissimos quod accusantium molestias ad. Unde molestiae animi cupiditate inventore saepe incidunt mollitia voluptatibus. Corporis quo repellendus molestiae quae laudantium. Aut molestiae veniam laborum temporibus similique dolorem corporis consectetur ullam. Neque distinctio provident. Pariatur distinctio repellat odit eveniet ab perferendis officiis sequi voluptas. Pariatur qui rerum. Quo veniam consequuntur deserunt fugiat illum. Pariatur illum fuga quaerat est quasi.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 9
+                    article_id: 9
+                    body: 'In accusamus ut natus molestias nulla quisquam. Maxime aspernatur quia ut neque voluptatum numquam similique unde. Laudantium architecto sed explicabo non error. Necessitatibus corporis necessitatibus recusandae eligendi provident. Dolor incidunt optio earum adipisci aperiam minima consequatur accusamus est. Officiis numquam impedit quas. Saepe maiores suscipit debitis ex ullam soluta atque ipsum. Assumenda atque quidem. Odit nobis fuga nulla ea deleniti.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 10
+                    article_id: 10
+                    body: 'Repellendus saepe autem sit. Aliquam commodi error doloribus eum voluptatum quo. Qui quidem ad reiciendis est ex quia voluptatibus voluptate. Voluptatem numquam delectus commodi eius. Aut magnam reprehenderit possimus ab neque soluta minus. Cumque quae alias accusamus eligendi veritatis. Molestias corrupti ipsum. Qui inventore iusto soluta earum sed. Deleniti maiores et quisquam dolores.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 11
+                    article_id: 11
+                    body: 'Voluptas exercitationem officia nisi. Quis quidem dicta molestias necessitatibus ullam soluta saepe voluptatibus. Quas similique qui. Occaecati ad ducimus quis non sapiente officia. Nisi iure eveniet fuga officiis earum praesentium. Reprehenderit ipsum eaque autem facere ex quaerat. Soluta soluta ullam sapiente corporis earum numquam corrupti voluptatum accusantium. Illum iure exercitationem optio deleniti perferendis ducimus perspiciatis repudiandae dicta. Cum repellendus laboriosam provident optio temporibus dignissimos voluptas.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 12
+                    article_id: 12
+                    body: 'Molestiae porro asperiores aut ullam. Ducimus molestiae magnam quia non doloremque nemo eius corrupti dolores. Ut rem nulla modi voluptatibus sunt. Vel illum commodi voluptatibus ad labore adipisci. Porro nam similique libero autem quisquam delectus magni. Quod veritatis laboriosam sint iusto eum possimus sunt incidunt. Animi corporis expedita natus aspernatur porro itaque quas alias. Ut vitae maiores suscipit eius consequatur. Perferendis recusandae assumenda quisquam.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 13
+                    article_id: 13
+                    body: 'Enim maxime natus fugit dolore dolorem. Nihil similique repudiandae minus. Sequi ea quo quae illo sit vitae quam nesciunt. Ullam iste hic. In dolore vitae. Harum vitae dicta quia voluptate provident. Molestias esse vel laudantium quos reprehenderit quibusdam saepe aperiam. Rerum quasi aliquam reiciendis repellat numquam iusto consequatur harum. Odit sapiente voluptatum omnis.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 14
+                    article_id: 14
+                    body: 'Impedit eos voluptatem corrupti tempora fuga qui consequuntur. Quasi esse hic fugiat a ipsa tenetur dolor. Doloremque voluptatum ipsum. Tenetur dolores perspiciatis nisi eius debitis consequatur. Voluptates sint atque quibusdam temporibus quaerat. Alias at neque architecto incidunt sapiente. Est facere vero minima impedit itaque harum dicta aliquam soluta. Iusto aliquid beatae et neque ut voluptate hic amet. Ex numquam ad optio in.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 15
+                    article_id: 15
+                    body: 'Ab eum hic occaecati nisi magnam. Iusto inventore vero ea laborum libero exercitationem nam. Repudiandae nobis quis aspernatur. Corporis libero autem odio in hic nostrum. Inventore molestias dicta molestias esse. Officiis optio inventore vero tempore error quasi aperiam earum tenetur. Quae temporibus totam et molestias quas incidunt. Harum incidunt quo veniam aliquam neque ab ab possimus expedita. Quaerat non quod tempore.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 16
+                    article_id: 16
+                    body: 'Dolorem placeat iusto harum molestiae officia perspiciatis animi occaecati nemo. Temporibus rem omnis aliquam eius. Nulla occaecati aut quis quia sit iste neque. Consectetur fugiat neque adipisci sequi necessitatibus quas distinctio similique ipsum. Laboriosam enim repellat. Veniam ad aspernatur esse doloremque architecto voluptate suscipit. Quis doloremque doloremque illo accusantium maiores. Ab id tempora libero vitae alias numquam quia. Quis doloribus minima voluptatem optio quo.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 17
+                    article_id: 17
+                    body: 'Molestias id corrupti unde laboriosam modi. Nemo fugiat quae nisi fugiat voluptatibus ad. Est odio voluptatem sit. Ipsa quam modi asperiores ea nesciunt. Eveniet dolorem dicta odio. Eaque illo quia optio. Tempora exercitationem dicta praesentium reprehenderit error ex. Cumque libero iusto cumque. Delectus laborum at.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 18
+                    article_id: 18
+                    body: 'Consequatur delectus molestias eligendi. Libero est tempore quam eos aliquam exercitationem saepe accusamus. Iusto sit nulla aperiam dolorum. Repellendus eius enim laudantium quod. Illum consequuntur placeat temporibus nobis minima. Odio adipisci blanditiis. Maxime voluptatem consectetur nobis est repellendus adipisci animi. Quos consequuntur quod suscipit sequi quia velit. Dolores dolorum adipisci quo nostrum suscipit modi recusandae nemo.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 19
+                    article_id: 19
+                    body: 'Recusandae iure eum perferendis quasi nulla inventore non fugiat dolor. Dolores laborum quaerat accusamus. Nam harum distinctio nam tenetur. Sequi eius ut blanditiis. Recusandae vero error necessitatibus commodi repellendus fugiat. Reiciendis laudantium eius ducimus tempore cum voluptates cum. Quidem beatae nostrum perferendis dolores maxime rerum. Commodi voluptas voluptates unde. Tenetur alias odit.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 20
+                    article_id: 20
+                    body: 'Commodi nisi minus eaque facere ipsa eius. Esse iusto mollitia voluptas ipsam commodi itaque optio vitae quas. Itaque ipsa et accusantium maxime. Temporibus corrupti natus vitae inventore occaecati. Excepturi eos ipsam. A porro repudiandae aliquid error tempora. Laborum consequuntur laudantium repellat dignissimos veritatis fugiat. Enim consequatur deserunt doloremque. Dignissimos necessitatibus natus eos impedit.'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"sort" must be one of [id, article_id, body, created_at, updated_at]'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+      tags:
+        - Contents
+  /api/v1/contents/{id}:
+    get:
+      summary: Get specific content
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/ContentBody'
+              example:
+                data:
+                  id: 21
+                  article_id: 21
+                  body: 'Ipsum corrupti inventore molestiae assumenda libero odio harum molestiae. Rerum repellat doloribus earum hic officiis. Odio fugit quo nemo. Optio rem commodi placeat molestias corrupti exercitationem id deserunt. Veritatis inventore dolorem corporis quo. Doloremque cupiditate necessitatibus aliquid exercitationem accusantium repudiandae accusamus itaque. Quasi tempora reprehenderit quod quam aliquid aut pariatur. Ipsum dicta nostrum reprehenderit fugiat. Soluta autem aspernatur modi id.'
+                  created_at: '2023-07-01T00:00:00.000Z'
+                  updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"id" must be a number'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Not Found'
+      tags:
+        - Contents
+    put:
+      summary: Update specific content
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/UpdateContentBody'
+            example:
+              article_id: 21
+              body: 'Earum corrupti inventore molestiae assumenda libero odio harum molestiae. Rerum repellat doloribus earum hic officiis. Odio fugit quo nemo. Optio rem commodi placeat molestias corrupti exercitationem id deserunt. Veritatis inventore dolorem corporis quo. Doloremque cupiditate necessitatibus aliquid exercitationem accusantium repudiandae accusamus itaque. Quasi tempora reprehenderit quod quam aliquid aut pariatur. Ipsum dicta nostrum reprehenderit fugiat. Soluta autem aspernatur modi id.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Content'
+              example:
+                data:
+                  id: 21
+                  article_id: 21
+                  body: 'Earum corrupti inventore molestiae assumenda libero odio harum molestiae. Rerum repellat doloribus earum hic officiis. Odio fugit quo nemo. Optio rem commodi placeat molestias corrupti exercitationem id deserunt. Veritatis inventore dolorem corporis quo. Doloremque cupiditate necessitatibus aliquid exercitationem accusantium repudiandae accusamus itaque. Quasi tempora reprehenderit quod quam aliquid aut pariatur. Ipsum dicta nostrum reprehenderit fugiat. Soluta autem aspernatur modi id.'
+                  created_at: '2023-07-01T00:00:00.000Z'
+                  updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Example 1:
+                  value:
+                    message: '"id" must be a number'
+                Example 2:
+                  value:
+                    message: '"body" is required'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Not Found'
+      tags:
+        - Contents
+    delete:
+      summary: Delete specific content
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"id" must be a number'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Not Found'
+      tags:
+        - Contents
+  /api/v1/tags:
+    get:
+      summary: Get tags paginated list
+      parameters:
+        - name: filters
+          required: false
+          in: query
+          examples:
+            Example 1:
+              value: {}
+            Example 2:
+              value:
+                filters[id__eq]: 1
+          schema:
+            type: object
+        - name: page
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            type: integer
+        - name: pageSize
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            type: integer
+        - name: sort
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: includes[]
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - articles
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/PaginatedListTagsBody'
+              example:
+                data:
+                  - id: 1
+                    name: 'rem'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 2
+                    name: 'perferendis'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 3
+                    name: 'aliquam'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 4
+                    name: 'nulla'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 5
+                    name: 'veniam'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                pagination:
+                  page: 1
+                  pageSize: 10
+                  rowCount: 5
+                  pageCount: 1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"page" must be a number'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+      tags:
+        - Tags
+    post:
+      summary: Create new tag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/CreateTagBody'
+            example:
+              name: 'beatae'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/TagBody'
+              example:
+                data:
+                  id: 6
+                  name: 'beatae'
+                  created_at: '2023-07-01T00:00:00.000Z'
+                  updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"name" is required'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+      tags:
+        - Tags
+  /api/v1/tags/all:
+    get:
+      summary: Get all tags
+      parameters:
+        - name: filters
+          required: false
+          in: query
+          examples:
+            Example 1:
+              value: {}
+            Example 2:
+              value:
+                filters[id__eq]: 1
+          schema:
+            type: object
+        - name: sort
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: includes[]
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - articles
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/ListTagsBody'
+              example:
+                data:
+                  - id: 1
+                    name: 'rem'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 2
+                    name: 'perferendis'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 3
+                    name: 'aliquam'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 4
+                    name: 'nulla'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                  - id: 5
+                    name: 'veniam'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"sort" must be one of [id, name, created_at, updated_at]'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+      tags:
+        - Tags
+  /api/v1/tags/{id}:
+    get:
+      summary: Get specific tag
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/TagBody'
+              example:
+                data:
+                  id: 6
+                  name: 'beatae'
+                  created_at: '2023-07-01T00:00:00.000Z'
+                  updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"id" must be a number'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Not Found'
+      tags:
+        - Tags
+    put:
+      operationId: TagsController_update
+      summary: Update specific tag
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/UpdateTagBody'
+            example:
+              name: 'labore'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/TagBody'
+              example:
+                data:
+                  id: 6
+                  name: 'labore'
+                  created_at: '2023-07-01T00:00:00.000Z'
+                  updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Example 1:
+                  value:
+                    message: '"id" must be a number'
+                Example 2:
+                  value:
+                    message: '"name" is required'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Not Found'
+      tags:
+        - Tags
+    delete:
+      summary: Delete specific tag
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"id" must be a number'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Not Found'
+      tags:
+        - Tags
+  /api/v1/articles-tags:
+    post:
+      summary: Create article-tag relation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/CreateArticleTagBody'
+            example:
+              article_id: 1
+              tag_id: 1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/ArticleWithTagsBody'
+              example:
+                data:
+                  id: 1,
+                  user_id: 1,
+                  title: 'sint repellendus inventore'
+                  description: 'Debitis assumenda molestiae facilis odio facilis. Aliquid odit reiciendis ut rerum reiciendis. Laborum numquam explicabo non.'
+                  status: 'published'
+                  created_at: '2023-07-01T00:00:00.000Z'
+                  updated_at: '2023-07-01T00:00:00.000Z'
+                  tags:
+                    - id: 1
+                      name: 'rem'
+                      created_at: '2023-07-01T00:00:00.000Z'
+                      updated_at: '2023-07-01T00:00:00.000Z'
+                    - id: 2
+                      name: 'perferendis'
+                      created_at: '2023-07-01T00:00:00.000Z'
+                      updated_at: '2023-07-01T00:00:00.000Z'
+                    - id: 3
+                      name: 'aliquam'
+                      created_at: '2023-07-01T00:00:00.000Z'
+                      updated_at: '2023-07-01T00:00:00.000Z'
+                    - id: 5
+                      name: 'veniam'
+                      created_at: '2023-07-01T00:00:00.000Z'
+                      updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"article_id" is required'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+      tags:
+        - Articles-Tags
+    delete:
+      summary: Delete article-tag relation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/RemoveArticleTagBody'
+            example:
+              article_id: 1
+              tag_id: 1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/ArticleWithTagsBody'
+              example:
+                data:
+                  id: 1,
+                  user_id: 1,
+                  title: 'sint repellendus inventore'
+                  description: 'Debitis assumenda molestiae facilis odio facilis. Aliquid odit reiciendis ut rerum reiciendis. Laborum numquam explicabo non.'
+                  status: 'published'
+                  created_at: '2023-07-01T00:00:00.000Z'
+                  updated_at: '2023-07-01T00:00:00.000Z'
+                  tags:
+                    - id: 2
+                      name: 'perferendis'
+                      created_at: '2023-07-01T00:00:00.000Z'
+                      updated_at: '2023-07-01T00:00:00.000Z'
+                    - id: 3
+                      name: 'aliquam'
+                      created_at: '2023-07-01T00:00:00.000Z'
+                      updated_at: '2023-07-01T00:00:00.000Z'
+                    - id: 5
+                      name: 'veniam'
+                      created_at: '2023-07-01T00:00:00.000Z'
+                      updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"article_id" is required'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+      tags:
+        - Articles-Tags
+  /api/v1/admins:
+    get:
+      summary: Get admins paginated list
+      parameters:
+        - name: filters
+          required: false
+          in: query
+          examples:
+            Example 1:
+              value: {}
+            Example 2:
+              value:
+                filters[id__eq]: 1
+          schema:
+            type: object
+        - name: page
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            type: integer
+        - name: pageSize
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            type: integer
+        - name: sort
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: includes[]
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: number
+              enum: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/PaginatedListAdminsBody'
+              example:
+                data:
+                  - id: 1
+                    name: 'Nikolay Shamayko'
+                    username: 'ns16'
+                    email: 'nikolay.shamayko@gmail.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+                pagination:
+                  page: 1
+                  pageSize: 10
+                  rowCount: 1
+                  pageCount: 1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"page" must be a number'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+      tags:
+        - Admins
+    post:
+      summary: Create new admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/CreateAdminBody'
+            example:
+              name: 'Anatoly Muravyov'
+              username: 'test'
+              password: 'RDnB7LAR'
+              email: 'anatoly.muravyov@gmail.com'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/AdminBody'
+              example:
+                data:
+                  id: 2
+                  name: 'Anatoly Muravyov'
+                  username: 'test'
+                  email: 'anatoly.muravyov@gmail.com'
+                  created_at: '2023-07-01T00:00:00.000Z'
+                  updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"name" is required'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+      tags:
+        - Admins
+  /api/v1/admins/all:
+    get:
+      summary: Get all admins
+      parameters:
+        - name: filters
+          required: false
+          in: query
+          examples:
+            Example 1:
+              value: {}
+            Example 2:
+              value:
+                filters[id__eq]: 1
+          schema:
+            type: object
+        - name: sort
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: includes[]
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              enum: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/ListAdminsBody'
+              example:
+                data:
+                  - id: 1
+                    name: 'Nikolay Shamayko'
+                    username: 'ns16'
+                    email: 'nikolay.shamayko@gmail.com'
+                    created_at: '2023-07-01T00:00:00.000Z'
+                    updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"sort" must be one of [id, name, username, email, created_at, updated_at]'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+      tags:
+        - Admins
+  /api/v1/admins/{id}:
+    get:
+      summary: Get specific admin
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/AdminBody'
+              example:
+                data:
+                  id: 2
+                  name: 'Anatoly Muravyov'
+                  username: 'test'
+                  email: 'anatoly.muravyov@gmail.com'
+                  created_at: '2023-07-01T00:00:00.000Z'
+                  updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"id" must be a number'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Not Found'
+      tags:
+        - Admins
+    put:
+      summary: Update specific admin
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/UpdateAdminBody'
+            example:
+              name: 'Anatoly Muravyov'
+              username: 'pest'
+              email: 'anatoly.muravyov@gmail.com'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responseBodies/AdminBody'
+              example:
+                data:
+                  id: 2
+                  name: 'Anatoly Muravyov'
+                  username: 'pest'
+                  email: 'anatoly.muravyov@gmail.com'
+                  created_at: '2023-07-01T00:00:00.000Z'
+                  updated_at: '2023-07-01T00:00:00.000Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Example 1:
+                  value:
+                    message: '"id" must be a number'
+                Example 2:
+                  value:
+                    message: '"name" is required'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Not Found'
+      tags:
+        - Admins
+    delete:
+      summary: Delete specific admin
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '"id" must be a number'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Invalid token'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Not Found'
+      tags:
+        - Admins
+components:
+  securitySchemes:
+    JWTAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+  requestBodies:
+    LoginBody:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 100
+        password:
+          type: string
+          minLength: 6
+          maxLength: 50
+      required:
+        - username
+        - password
+    CreateUserBody:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        username:
+          type: string
+          maxLength: 100
+        password:
+          type: string
+          minLength: 6
+          maxLength: 50
+        email:
+          type: string
+          maxLength: 100
+          format: email
+      required:
+        - name
+        - username
+        - password
+        - email
+    UpdateUserBody:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        username:
+          type: string
+          maxLength: 100
+        password:
+          type: string
+          minLength: 6
+          maxLength: 50
+        email:
+          type: string
+          maxLength: 100
+          format: email
+      required:
+        - name
+        - username
+        - email
+    CreateArticleBody:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 500
+        status:
+          type: string
+          enum:
+            - published
+            - draft
+      required:
+        - user_id
+        - title
+        - description
+        - status
+    UpdateArticleBody:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 500
+        status:
+          type: string
+          enum:
+            - published
+            - draft
+      required:
+        - user_id
+        - title
+        - description
+        - status
+    CreateContentBody:
+      type: object
+      properties:
+        article_id:
+          type: integer
+          minimum: 1
+        body:
+          type: string
+      required:
+        - article_id
+        - body
+    UpdateContentBody:
+      type: object
+      properties:
+        article_id:
+          type: integer
+          minimum: 1
+        body:
+          type: string
+      required:
+        - article_id
+        - body
+    CreateTagBody:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+      required:
+        - name
+    UpdateTagBody:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+      required:
+        - name
+    CreateArticleTagBody:
+      type: object
+      properties:
+        article_id:
+          type: integer
+          minimum: 1
+        tag_id:
+          type: integer
+          minimum: 1
+      required:
+        - article_id
+        - tag_id
+    RemoveArticleTagBody:
+      type: object
+      properties:
+        article_id:
+          type: integer
+          minimum: 1
+        tag_id:
+          type: integer
+          minimum: 1
+      required:
+        - article_id
+        - tag_id
+    CreateAdminBody:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        username:
+          type: string
+          maxLength: 100
+        password:
+          type: string
+          minLength: 6
+          maxLength: 50
+        email:
+          type: string
+          maxLength: 100
+          format: email
+      required:
+        - name
+        - username
+        - password
+        - email
+    UpdateAdminBody:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        username:
+          type: string
+          maxLength: 100
+        password:
+          type: string
+          minLength: 6
+          maxLength: 50
+        email:
+          type: string
+          maxLength: 100
+          format: email
+      required:
+        - name
+        - username
+        - email
+  responseBodies:
+    UserBody:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/User'
+    ListUsersBody:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    PaginatedListUsersBody:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    ArticleBody:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Article'
+    ListArticlesBody:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Article'
+    PaginatedListArticlesBody:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Article'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    ContentBody:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Content'
+    ListContentsBody:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content'
+    PaginatedListContentsBody:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    TagBody:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Tag'
+    ListTagsBody:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+    PaginatedListTagsBody:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    ArticleWithTagsBody:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ArticleWithTags'
+    AdminBody:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Admin'
+    ListAdminsBody:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Admin'
+    PaginatedListAdminsBody:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Admin'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+        name:
+          type: string
+          maxLength: 100
+        username:
+          type: string
+          maxLength: 100
+        email:
+          type: string
+          maxLength: 100
+          format: email
+        created_at:
+          format: date-time
+          type: string
+        updated_at:
+          format: date-time
+          type: string
+      required:
+        - id
+        - name
+        - username
+        - email
+        - created_at
+        - updated_at
+      example:
+        id: 1
+        name: 'Sheldon Bahringer'
+        username: 'Sheldon52'
+        email: 'Sheldon_Bahringer6@yahoo.com'
+        created_at: '2023-07-01T00:00:00.000Z'
+        updated_at: '2023-07-01T00:00:00.000Z'
+    Article:
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+        user_id:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 500
+        status:
+          type: string
+          enum:
+            - published
+            - draft
+        created_at:
+          format: date-time
+          type: string
+        updated_at:
+          format: date-time
+          type: string
+      required:
+        - id
+        - user_id
+        - title
+        - description
+        - status
+        - created_at
+        - updated_at
+      example:
+        id: 1
+        user_id: 1
+        title: 'sint repellendus inventore'
+        description: 'Debitis assumenda molestiae facilis odio facilis. Aliquid odit reiciendis ut rerum reiciendis. Laborum numquam explicabo non.'
+        status: 'published'
+        created_at: '2023-07-01T00:00:00.000Z'
+        updated_at: '2023-07-01T00:00:00.000Z'
+    Content:
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+        article_id:
+          type: integer
+          minimum: 1
+        body:
+          type: string
+        created_at:
+          format: date-time
+          type: string
+        updated_at:
+          format: date-time
+          type: string
+      required:
+        - id
+        - article_id
+        - body
+        - created_at
+        - updated_at
+      example:
+        id: 1
+        article_id: 1
+        body: 'Quam est dicta libero non voluptatem sint. Vitae harum sed quia sequi vel voluptas inventore aut eius. Aperiam blanditiis optio ducimus delectus error repellendus asperiores molestiae. Assumenda et error et unde. Neque quas necessitatibus aliquam incidunt vel. Aliquid enim porro doloribus laudantium. Deserunt odio iusto quisquam amet ut neque aliquam quis. Architecto officia culpa. Repellat fugit molestias nostrum fugiat ut temporibus.'
+        created_at: '2023-07-01T00:00:00.000Z'
+        updated_at: '2023-07-01T00:00:00.000Z'
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+        name:
+          type: string
+          maxLength: 100
+        created_at:
+          format: date-time
+          type: string
+        updated_at:
+          format: date-time
+          type: string
+      required:
+        - id
+        - name
+        - created_at
+        - updated_at
+      example:
+        id: 1
+        name: 'rem'
+        created_at: '2023-07-01T00:00:00.000Z'
+        updated_at: '2023-07-01T00:00:00.000Z'
+    ArticleWithTags:
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+        user_id:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 500
+        status:
+          type: string
+          enum:
+            - published
+            - draft
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        created_at:
+          format: date-time
+          type: string
+        updated_at:
+          format: date-time
+          type: string
+      required:
+        - id
+        - user_id
+        - title
+        - description
+        - status
+        - tags
+        - created_at
+        - updated_at
+      example:
+        id: 1,
+        user_id: 1,
+        title: 'sint repellendus inventore'
+        description: 'Debitis assumenda molestiae facilis odio facilis. Aliquid odit reiciendis ut rerum reiciendis. Laborum numquam explicabo non.'
+        status: 'published'
+        created_at: '2023-07-01T00:00:00.000Z'
+        updated_at: '2023-07-01T00:00:00.000Z'
+        tags:
+          - id: 2
+            name: 'perferendis'
+            created_at: '2023-07-01T00:00:00.000Z'
+            updated_at: '2023-07-01T00:00:00.000Z'
+          - id: 3
+            name: 'aliquam'
+            created_at: '2023-07-01T00:00:00.000Z'
+            updated_at: '2023-07-01T00:00:00.000Z'
+          - id: 5
+            name: 'veniam'
+            created_at: '2023-07-01T00:00:00.000Z'
+            updated_at: '2023-07-01T00:00:00.000Z'
+    Admin:
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+        name:
+          type: string
+          maxLength: 100
+        username:
+          type: string
+          maxLength: 100
+        email:
+          type: string
+          maxLength: 100
+          format: email
+        created_at:
+          format: date-time
+          type: string
+        updated_at:
+          format: date-time
+          type: string
+      required:
+        - id
+        - name
+        - username
+        - email
+        - created_at
+        - updated_at
+      example:
+        id: 1
+        name: 'Nikolay Shamayko'
+        username: 'ns16'
+        email: 'nikolay.shamayko@gmail.com'
+        created_at: '2023-07-01T00:00:00.000Z'
+        updated_at: '2023-07-01T00:00:00.000Z'
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 1
+        pageSize:
+          type: integer
+          minimum: 1
+        rowCount:
+          type: integer
+          minimum: 0
+        pageCount:
+          type: integer
+          minimum: 0
+      required:
+        - page
+        - pageSize
+        - rowCount
+        - pageCount
+      example:
+        page: 1
+        pageSize: 10
+        rowCount: 1
+        pageCount: 1
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+      example:
+        message: 'Invalid token'
