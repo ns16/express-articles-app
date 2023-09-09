@@ -1,5 +1,5 @@
-import { Tag } from '../models/index.js'
 import BaseController from '../../lib/base_controller.js'
+import { Tag } from '../models/index.js'
 
 class TagsController extends BaseController {
   constructor() {

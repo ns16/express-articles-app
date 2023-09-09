@@ -1,5 +1,5 @@
-import { Article, Content } from '../models/index.js'
 import BaseController from '../../lib/base_controller.js'
+import { Article, Content } from '../models/index.js'
 
 class ContentsController extends BaseController {
   constructor() {

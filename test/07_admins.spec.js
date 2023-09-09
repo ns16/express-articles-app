@@ -1,12 +1,16 @@
 import chai from 'chai'
+
+import server from '../index.js'
+
 import { getAuthorization, createAdmin } from './_tools/helpers.js'
 import { adminSchema, adminsListSchema, paginationSchema } from './_tools/schemas.js'
-import server from '../index.js'
 
 let authorization = null
 
 describe('AdminsController (e2e)', () => {
-  before(async () => authorization = await getAuthorization())
+  before(async () => {
+    authorization = await getAuthorization()
+  })
 
   describe('/api/v1/admins (GET)', () => {
     it('{"query":{}} - 401 error, invalid token', async () => {

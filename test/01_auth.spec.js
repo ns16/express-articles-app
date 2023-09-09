@@ -1,12 +1,16 @@
 import chai from 'chai'
+
+import server from '../index.js'
+
 import { getAuthorization } from './_tools/helpers.js'
 import { adminSchema } from './_tools/schemas.js'
-import server from '../index.js'
 
 let authorization = null
 
 describe('AuthController (e2e)', () => {
-  before(async () => authorization = await getAuthorization())
+  before(async () => {
+    authorization = await getAuthorization()
+  })
 
   describe('/api/v1/auth/login (POST)', () => {
     it('{"body":{"username":"ns17","password":"123456"}} - 401 error, invalid username', async () => {

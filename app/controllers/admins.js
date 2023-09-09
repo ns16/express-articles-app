@@ -1,5 +1,5 @@
-import { Admin } from '../models/index.js'
 import BaseController from '../../lib/base_controller.js'
+import { Admin } from '../models/index.js'
 
 class AdminsController extends BaseController {
   constructor() {

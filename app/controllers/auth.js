@@ -1,5 +1,5 @@
-import { Admin } from '../models/index.js'
 import BaseAuthController from '../../lib/base_auth_controller.js'
+import { Admin } from '../models/index.js'
 
 class AuthController extends BaseAuthController {
   constructor() {

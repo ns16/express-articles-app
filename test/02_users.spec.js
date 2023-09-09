@@ -1,4 +1,7 @@
 import chai from 'chai'
+
+import server from '../index.js'
+
 import { getAuthorization, createUser } from './_tools/helpers.js'
 import {
   userSchema,
@@ -7,12 +10,13 @@ import {
   usersWithArticlesListSchema,
   userWithArticlesSchema
 } from './_tools/schemas.js'
-import server from '../index.js'
 
 let authorization = null
 
 describe('UsersController (e2e)', () => {
-  before(async () => authorization = await getAuthorization())
+  before(async () => {
+    authorization = await getAuthorization()
+  })
 
   describe('/api/v1/users (GET)', () => {
     it('{"query":{}} - 401 error, invalid token', async () => {

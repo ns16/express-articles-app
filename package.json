@@ -11,7 +11,9 @@
     "migrate:reset": "knex migrate:rollback --all",
     "migrate:refresh": "npm run migrate:reset && npm run migrate",
     "db:seed": "knex seed:run",
-    "test": "cross-env NODE_ENV=test mocha ./test --file ./test/_tools/setup.js --timeout 30000"
+    "test": "cross-env NODE_ENV=test mocha ./test --file ./test/_tools/setup.js --timeout 30000",
+    "lint": "npx eslint .",
+    "lint:fix": "npx eslint --fix ."
   },
   "author": "Nikolay Shamayko <nikolay.shamayko@gmail.com>",
   "license": "MIT",
@@ -44,6 +46,10 @@
     "chai-deep-match": "^1.2.1",
     "chai-http": "^4.4.0",
     "chai-json-schema": "^1.5.1",
+    "eslint": "^8.56.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-mocha": "^10.2.0",
     "mocha": "^10.2.0"
   }
 }

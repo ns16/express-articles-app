@@ -1,5 +1,5 @@
-import { User } from '../models/index.js'
 import BaseController from '../../lib/base_controller.js'
+import { User } from '../models/index.js'
 
 class UsersController extends BaseController {
   constructor() {

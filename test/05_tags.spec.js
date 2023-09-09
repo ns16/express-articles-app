@@ -1,4 +1,7 @@
 import chai from 'chai'
+
+import server from '../index.js'
+
 import { getAuthorization, createTag } from './_tools/helpers.js'
 import {
   tagSchema,
@@ -7,12 +10,13 @@ import {
   tagsWithArticlesListSchema,
   tagWithArticlesSchema
 } from './_tools/schemas.js'
-import server from '../index.js'
 
 let authorization = null
 
 describe('TagsController (e2e)', () => {
-  before(async () => authorization = await getAuthorization())
+  before(async () => {
+    authorization = await getAuthorization()
+  })
 
   describe('/api/v1/tags (GET)', () => {
     it('{"query":{}} - 401 error, invalid token', async () => {

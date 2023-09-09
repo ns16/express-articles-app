@@ -1,5 +1,5 @@
-import { Article, Tag } from '../models/index.js'
 import BaseRelationController from '../../lib/base_relation_controller.js'
+import { Article, Tag } from '../models/index.js'
 
 class ArticlesTagsController extends BaseRelationController {
   constructor() {

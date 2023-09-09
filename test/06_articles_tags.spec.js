@@ -1,12 +1,16 @@
 import chai from 'chai'
+
+import server from '../index.js'
+
 import { getAuthorization, attachTagToArticle } from './_tools/helpers.js'
 import { articleWithTagsSchema } from './_tools/schemas.js'
-import server from '../index.js'
 
 let authorization = null
 
 describe('ArticlesTagsController (e2e)', () => {
-  before(async () => authorization = await getAuthorization())
+  before(async () => {
+    authorization = await getAuthorization()
+  })
 
   describe('/api/v1/articles-tags (POST)', () => {
     it('{"body":{"article_id":1,"tag_id":1}} - 401 error, invalid token', async () => {
@@ -57,7 +61,7 @@ describe('ArticlesTagsController (e2e)', () => {
       res.should.have.status(201)
       res.body.data.should.be.jsonSchema(articleWithTagsSchema)
       res.body.data.id.should.be.equal(body.article_id)
-      res.body.data.tags.some(tag => tag.id === body.tag_id).should.be.true
+      res.body.data.tags.some(tag => tag.id === body.tag_id).should.be.equal(true)
       res.body.data.tags.filter(tag => tag.id === body.tag_id).should.have.lengthOf(1)
     })
 
@@ -74,7 +78,7 @@ describe('ArticlesTagsController (e2e)', () => {
       res.should.have.status(201)
       res.body.data.should.be.jsonSchema(articleWithTagsSchema)
       res.body.data.id.should.be.equal(body.article_id)
-      res.body.data.tags.some(tag => tag.id === body.tag_id).should.be.true
+      res.body.data.tags.some(tag => tag.id === body.tag_id).should.be.equal(true)
       res.body.data.tags.filter(tag => tag.id === body.tag_id).should.have.lengthOf(1)
     })
   })
@@ -129,7 +133,7 @@ describe('ArticlesTagsController (e2e)', () => {
       res.should.have.status(200)
       res.body.data.should.be.jsonSchema(articleWithTagsSchema)
       res.body.data.id.should.be.equal(body.article_id)
-      res.body.data.tags.some(tag => tag.id === body.tag_id).should.not.be.true
+      res.body.data.tags.some(tag => tag.id === body.tag_id).should.be.not.equal(true)
     })
 
     it('{"body":{"article_id":1,"tag_id":1}} - success, tags relation does not exist', async () => {
@@ -144,7 +148,7 @@ describe('ArticlesTagsController (e2e)', () => {
       res.should.have.status(200)
       res.body.data.should.be.jsonSchema(articleWithTagsSchema)
       res.body.data.id.should.be.equal(body.article_id)
-      res.body.data.tags.some(tag => tag.id === body.tag_id).should.not.be.true
+      res.body.data.tags.some(tag => tag.id === body.tag_id).should.be.not.equal(true)
     })
   })
 })

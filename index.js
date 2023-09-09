@@ -1,6 +1,6 @@
-import express from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
+import express from 'express'
 import morgan from 'morgan'
 import swaggerUi from 'swagger-ui-express'
 import YAML from 'yamljs'

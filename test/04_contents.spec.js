@@ -1,4 +1,7 @@
 import chai from 'chai'
+
+import server from '../index.js'
+
 import { getAuthorization, createArticle, createContent } from './_tools/helpers.js'
 import {
   contentSchema,
@@ -7,12 +10,13 @@ import {
   contentWithArticleSchema,
   paginationSchema
 } from './_tools/schemas.js'
-import server from '../index.js'
 
 let authorization = null
 
 describe('ContentsController (e2e)', () => {
-  before(async () => authorization = await getAuthorization())
+  before(async () => {
+    authorization = await getAuthorization()
+  })
 
   describe('/api/v1/contents (GET)', () => {
     it('{"query":{}} - 401 error, invalid token', async () => {
